@@ -65,7 +65,7 @@ class Model_1_Trainer(TrainingLoop):
         
     def run(self, evaluate_model=False):
         # Run Training Loop
-        self.train(self.model, self.optimizer, self.loss_fn, self.train_loader, self.epochs)
+        self.train_model(self.model, self.optimizer, self.loss_fn, self.train_loader, self.epochs)
         
         # Run Test if True
         if evaluate_model:
@@ -130,7 +130,7 @@ class Model_2_Trainer(TrainingLoop):
         
     def run(self, evaluate_model=False):
         # Run Training Loop
-        self.train(self.model, self.optimizer, self.loss_fn, self.train_loader, self.epochs)
+        self.train_model(self.model, self.optimizer, self.loss_fn, self.train_loader, self.epochs)
         
         # Run Test if True
         if evaluate_model:

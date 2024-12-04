@@ -17,7 +17,7 @@ class TrainingLoop:
     
     # Training the Model
     @classmethod
-    def train(cls, model, optimizer, loss_fn, train_loader, epochs):
+    def train_model(cls, model, optimizer, loss_fn, train_loader, epochs):
         # Set Model to Train
         model.train()
         
@@ -30,6 +30,7 @@ class TrainingLoop:
             for images, labels in tqdm.tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs} [Previous Loss: {temp_loss if temp_loss != 0.0 else 'N/A'}]"):
                 # Flatten Image
                 images = images.view(images.size(0), -1).float()
+                print(f'This is the shape of the images: {images.shape}')
                 
                 # Zero Parameter Gradients
                 optimizer.zero_grad()
@@ -45,11 +46,11 @@ class TrainingLoop:
                 running_loss += loss.item()
                 
                 print(labels)
+                print(output)
                 
                 # Check if the max in the final column's index is not equal to labels
                 _, predicted = max(output.data, 1)
                 correct = (predicted == labels).sum().item()
-                
             
             # Calculate temp_loss
             temp_loss = f"{(running_loss / len(train_loader)):.4f}"
