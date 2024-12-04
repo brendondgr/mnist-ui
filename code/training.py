@@ -1,7 +1,7 @@
 import tqdm
 
 # Import Zero Grad
-from torch import no_grad
+from torch import no_grad, max
 
 
 # DataLoaders
@@ -17,9 +17,16 @@ class TrainingLoop:
     # Training the Model
     @classmethod
     def train(cls, model, optimizer, loss_fn, train_loader, epochs):
+        # Set Model to Train
         model.train()
+        
+        # Loss
+        temp_loss = 0.0
+        
+        # Training Loop
         for epoch in range(epochs):
-            for images, labels in tqdm.tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}"):
+            running_loss = 0.0
+            for images, labels in tqdm.tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs} [Previous Loss: {temp_loss if temp_loss != 0.0 else 'N/A'}]"):
                 # Flatten Image
                 images = images.view(images.size(0), -1).float()
                 
@@ -28,26 +35,50 @@ class TrainingLoop:
                 
                 # Forward Pass
                 output = model(images)
-                loss = loss_fn(images, labels)
+                loss = loss_fn(output, labels)
                 
                 # Backward Pass
                 loss.backward()
                 optimizer.step()
+                
+                running_loss += loss.item()
+            
+            # Calculate temp_loss
+            temp_loss = f"{(running_loss / len(train_loader)):.4f}"
+        
+        # Return Model
+        return model
     
     
     
     # Testing the Model
     @classmethod
     def evaluate(cls, model, loss_fn, test_loader):
+        # Set model for evaluation
         model.eval()
+        
+        # Variables
         test_loss = 0
         correct = 0
+        total=0
+        
+        # Begin
         with no_grad():
-            for data, target in test_loader:
-                output = model(data)
-                test_loss += loss_fn(output, target).item()
-                pred = output.argmax(dim=1, keepdim=True)
-                correct += pred.eq(target.view_as(pred)).sum().item()
-        test_loss /= len(test_loader.dataset)
-        accuracy = 100. * correct / len(test_loader.dataset)
-        return test_loss, accuracy
+            for images, labels in test_loader:
+                # Get Images
+                images = images.view(images.size(0), -1).float()
+                
+                # Outputs
+                outputs = model(images)
+                
+                # Loss
+                loss = loss_fn(outputs, labels)
+                test_loss += loss.item()
+                
+                _, predicted = max(outputs.data, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
+        
+        # Return Results
+        print(f"Test Loss: {(test_loss / len(test_loader)):.4f}")
+        print(f"Accuracy: {(100 * correct / total):.2f}%")
