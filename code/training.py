@@ -43,6 +43,13 @@ class TrainingLoop:
                 optimizer.step()
                 
                 running_loss += loss.item()
+                
+                print(labels)
+                
+                # Check if the max in the final column's index is not equal to labels
+                _, predicted = max(output.data, 1)
+                correct = (predicted == labels).sum().item()
+                
             
             # Calculate temp_loss
             temp_loss = f"{(running_loss / len(train_loader)):.4f}"
@@ -91,7 +98,7 @@ class TrainingLoop:
             os.makedirs(os.path.dirname(path))
         
         # Name
-        number = len(os.listdir(os.path.dirname(path))) + 1
+        number = int(len(os.listdir(path))) + 1
         name = f"{path}/model_{number}.pth"
         
         save(model.state_dict(), name)
