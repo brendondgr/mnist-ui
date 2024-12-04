@@ -30,7 +30,9 @@ class TrainingLoop:
             for images, labels in tqdm.tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs} [Previous Loss: {temp_loss if temp_loss != 0.0 else 'N/A'}]"):
                 # Flatten Image
                 images = images.view(images.size(0), -1).float()
-                print(f'This is the shape of the images: {images.shape}')
+                
+                # Normalize images
+                images = images / 255.0
                 
                 # Zero Parameter Gradients
                 optimizer.zero_grad()
@@ -45,8 +47,8 @@ class TrainingLoop:
                 
                 running_loss += loss.item()
                 
-                print(labels)
-                print(output)
+                # print(labels)
+                # print(output)
                 
                 # Check if the max in the final column's index is not equal to labels
                 _, predicted = max(output.data, 1)
@@ -103,3 +105,6 @@ class TrainingLoop:
         name = f"{path}/model_{number}.pth"
         
         save(model.state_dict(), name)
+        
+        # Print
+        print(f"Model Saved: {name}")

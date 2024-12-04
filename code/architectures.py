@@ -24,28 +24,14 @@ from training import TrainingLoop
 class Model_1(torch.nn.Module):
     def __init__(self):
         super(Model_1, self).__init__()
-        self.layer1 = torch.nn.Linear(784, 512)
-        self.layer2 = torch.nn.Linear(512, 256)
-        self.layer3 = torch.nn.Linear(256, 128)
-        self.layer4 = torch.nn.Linear(128, 64)
-        self.layer5 = torch.nn.Linear(64, 128)
-        self.layer6 = torch.nn.Linear(128, 64)
-        self.layer7 = torch.nn.Linear(64, 32)
-        self.layer8 = torch.nn.Linear(32, 64)
-        self.layer9 = torch.nn.Linear(64, 32)
-        self.layer10 = torch.nn.Linear(32, 10)
+        self.layer1 = torch.nn.Linear(784, 256)
+        self.layer2 = torch.nn.Linear(256, 100)
+        self.layer3 = torch.nn.Linear(100, 10)
     
     def forward(self, x):
         x = torch.relu(self.layer1(x))
         x = torch.relu(self.layer2(x))
-        x = torch.relu(self.layer3(x))
-        x = torch.relu(self.layer4(x))
-        x = torch.relu(self.layer5(x))
-        x = torch.relu(self.layer6(x))
-        x = torch.relu(self.layer7(x))
-        x = torch.relu(self.layer8(x))
-        x = torch.relu(self.layer9(x))
-        x = self.layer10(x)
+        x = self.layer3(x)
         return x
 
 class Model_1_Trainer(TrainingLoop):

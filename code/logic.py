@@ -47,14 +47,15 @@ class Logic:
         
         # Resize Image to 28x28
         image = cv2.resize(arr, (28, 28))
-        self.console.add_message(image.shape)
         
         # Flatten image so that it can be used as input
-        image = image.flatten()
-        self.console.add_message(image.shape)
+        image = image = torch.tensor(image).view(-1).float()
+        
+        # Normalize
+        image = image / 255.0
         
         # Convert to Tensor Float32
-        image = torch.tensor(image*255, dtype=torch.float32)
+        image = torch.tensor(image, dtype=torch.float32)
         
         self.pth.eval()
         with torch.no_grad():
@@ -64,7 +65,7 @@ class Logic:
             # Print the Output Tensor, but as a simple List.
             self.console.add_message(f"Output: {output.tolist()}")
             
-            # Apply Maximum Function
+            # Find the index of the maximum value
             prediction = torch.argmax(output).item()
             
             # Print Prediction
