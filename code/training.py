@@ -1,8 +1,9 @@
+# Import General
 import tqdm
+import os
 
 # Import Zero Grad
-from torch import no_grad, max
-
+from torch import no_grad, max, save
 
 # DataLoaders
 from torch.utils.data import DataLoader
@@ -82,3 +83,15 @@ class TrainingLoop:
         # Return Results
         print(f"Test Loss: {(test_loss / len(test_loader)):.4f}")
         print(f"Accuracy: {(100 * correct / total):.2f}%")
+    
+    @classmethod
+    def save_model(cls, model, path):
+        # Create Folder if not exist
+        if not os.path.exists(os.path.dirname(path)):
+            os.makedirs(os.path.dirname(path))
+        
+        # Name
+        number = len(os.listdir(os.path.dirname(path))) + 1
+        name = f"{path}/model_{number}.pth"
+        
+        save(model.state_dict(), name)
