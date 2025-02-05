@@ -1,6 +1,7 @@
 import sys
 import os
 from PySide6.QtWidgets import QVBoxLayout, QApplication, QWidget, QComboBox, QPushButton, QHBoxLayout
+from PySide6.QtCore import Qt
 
 class OptionsMenu(QWidget):
     def __init__(self, logic):
@@ -46,6 +47,9 @@ class OptionsMenu(QWidget):
         
         # Set the layout for the widget
         self.setLayout(layout)
+        
+        # Make Layout Qt.AlignTop
+        layout.setAlignment(Qt.AlignTop)
 
     def loadModel(self):
         # Placeholder function for loading a model

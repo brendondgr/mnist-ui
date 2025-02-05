@@ -2,7 +2,7 @@
 archive.zip
 archive/
 data/
-models/
+# models/
 
 
 ### C++ ###

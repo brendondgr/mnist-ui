@@ -1,4 +1,5 @@
 from PySide6 import QtCore, QtGui, QtWidgets
+import numpy as np
 
 class DrawingCanvas(QtWidgets.QLabel):
     def __init__(self, parent=None):
@@ -47,6 +48,50 @@ class DrawingCanvas(QtWidgets.QLabel):
     def clear_canvas(self):
         self.canvas.fill(QtGui.QColor("white"))
         self.setPixmap(self.canvas)
+
+    
+    def get_canvas_as_array(self):
+        """
+        Converts the canvas (QPixmap) into a NumPy array.
+
+        Returns:
+            numpy.ndarray: A 3D array representing the image in RGB format.
+        """
+        # Convert QPixmap to QImage
+        qimage = self.canvas.toImage()
+
+        # Ensure the QImage format is RGB32 for compatibility
+        qimage = qimage.convertToFormat(QtGui.QImage.Format_RGB32)
+
+        # Extract image dimensions
+        width = qimage.width()
+        height = qimage.height()
+
+        # Access the raw pixel data as a memoryview
+        ptr = qimage.bits()
+
+        # Convert the memoryview to a NumPy array
+        arr = np.frombuffer(ptr, dtype=np.uint8).reshape((height, width, 4))  # RGBA format
+
+        # Remove the alpha channel if not needed
+        arr = arr[:, :, :3]  # Keep only RGB channels
+        
+        # Ignore RGB Channels, Make it 1x280x280...
+        arr = arr.mean(axis=2)  # Convert to grayscale by averaging RGB channels
+        
+        # Change Shape from 1x280x280 to 28x28. Skip 10 pixels
+        arr = arr[::10, ::10]
+        
+        # Unsqueeze to add a channel dimension
+        arr = arr[np.newaxis, :, :]
+        
+        # Convert each element of array to float32
+        arr = arr.astype(np.float32)
+        
+        # Normalize
+        arr = arr / 255.0
+
+        return arr
 
 class CanvasWidget(QtWidgets.QWidget):
     def __init__(self):
