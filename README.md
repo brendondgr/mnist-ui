@@ -9,7 +9,7 @@
 
 ## Model
 - Model can be currently found in "models/", with the code found in "code/architectures.py"
-- Current Model provided contains 688,328 Trainable Parameters, which is a bit overkill. However, it is still very runnable on a CPU. Previous models that were trained contained ~10,000 Parameters at a 92.5% accuracy, but I went with this one instead.
+- Current Model provided contains 688,328 Trainable Parameters at an accuracy of 98.0%, which is a bit overkill. However, it is still very runnable on a CPU. Previous models that were trained contained ~10,000 Parameters at a 92.5% accuracy, but I went with this one instead.
 - Below is training results for 600k Parameter Model.
 ```
 ## ARGUMENTS ##
